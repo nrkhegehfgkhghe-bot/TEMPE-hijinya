@@ -1,10 +1,6 @@
 PABRIK TEMPE
 
 
-
-
-
-
 Pendahuluan
 
 Tujuan
