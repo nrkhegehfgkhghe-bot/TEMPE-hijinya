@@ -78,7 +78,7 @@ Aplikasi dapat diakses menggunakan berbagai browser seperti:
 Google Chrome
 Microsoft Edge
 Mozilla Firefox
-2.3 Hardware Interface
+Hardware Interface
 
 Sistem ini tidak memerlukan perangkat keras khusus, namun dapat berjalan dengan spesifikasi minimum sebagai berikut:
 
@@ -91,7 +91,7 @@ Database MySQL
 
 Sistem ini berjalan pada arsitektur client-server, di mana pengguna mengakses aplikasi melalui browser dan data diproses oleh server.
 
-2.4 Manfaat Produk
+Manfaat Produk
 
 Aplikasi Pabrik Tempe memberikan berbagai manfaat, antara lain:
 
@@ -105,25 +105,7 @@ Monitoring Real-Time
 Pemilik usaha dapat memantau kondisi produksi dan penjualan kapan saja.
 Meningkatkan Produktivitas Usaha
 Dengan sistem yang terorganisir, proses bisnis menjadi lebih optimal.
-2.5 Karakteristik User
 
-Pengguna sistem dibagi menjadi beberapa kategori:
-
-1. Admin
-Memiliki akses penuh ke sistem
-Mengelola data produksi, stok, dan penjualan
-Mengakses laporan
-2. Pemilik Usaha
-Melihat laporan produksi dan penjualan
-Memantau perkembangan usaha
-3. Pelanggan
-Melakukan pemesanan produk
-Melihat informasi produk
-
-Karakteristik umum pengguna:
-
-Memiliki pengetahuan dasar penggunaan komputer
-Dapat mengoperasikan browser
 
 
 
