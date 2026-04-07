@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Dino with Hadouken and Boss HP</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #f1f1f1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #gameCanvas {
+            background-color: #f4f4f4;
+            display: block;
+            border: 4px solid black;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="score">Score: 0</div>
+    <canvas id="gameCanvas" width="1000" height="400"></canvas>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const dinoImg = new Image();
+        dinoImg.src = 'seo.jfif';
+        const hadoukenImg = new Image();
+        hadoukenImg.src = 'seo.jfif';
+        
+        // Tambahkan objek audio untuk Hadouken
+        const hadoukenSound = new Audio('Hadouken Sound effect.mp3');
+        
+        const dino = {
+            x: 50,
+            y: 300,
+            width: 50,
+            height: 50,
+            jumpHeight: 0,
+            gravity: 1,
+            jumpSpeed: -23,
+            isJumping: false,
+            jumpCount: 0,
+            hasJumpedOnce: false
+        };
+
+        const groundLevel = 300;
+        const obstacles = [];
+        const obstacleWidth = 20;
+        const obstacleHeight = 30;
+        const obstacleFrequency = 150;
+        const maxObstaclesOnScreen = 2;
+
+        let score = 0;
+        let gameSpeed = 3;
+        let isGameOver = false;
+        let gameStarted = false;
+
+        let lastKeyPressTime = 0;
+        const doubleTapTimeLimit = 1500;
+
+        const hadouken = {
+            x: -50,
+            y: groundLevel - 20,
+            width: 30,
+            height: 15,
+            speed: 8,
+            isShooting: false
+        };
+
+        // Variabel untuk Boss
+        let boss = null;
+        const bossSpeed = 2;
+        const bossAttackCooldown = 3000; // Waktu serangan bos
+        let lastBossAttackTime = 0;
+        let bossHP = 100; // HP awal bos
+        let bossProjectiles = []; // Array untuk proyektil bos
+
+        function resetGame() {
+            dino.y = groundLevel;
+            dino.isJumping = false;
+            dino.jumpHeight = 0;
+            dino.jumpCount = 0;
+            dino.hasJumpedOnce = false;
+            obstacles.length = 0;
+            score = 0;
+            gameSpeed = 3;
+            isGameOver = false;
+            gameStarted = true;
+            hadouken.x = -50;
+            document.getElementById('score').textContent = 'Score: ' + score;
+            boss = null; // Reset bos
+            bossHP = 100; // Reset HP bos
+            bossProjectiles = []; // Hapus proyektil bos
+        }
+
+        function drawDino() {
+            ctx.drawImage(dinoImg, dino.x, dino.y, dino.width, dino.height);
+        }
+
+        function drawObstacles() {
+            obstacles.forEach((obstacle, index) => {
+                ctx.fillStyle = 'green';
+                ctx.fillRect(obstacle.x, obstacle.y, obstacleWidth, obstacleHeight);
+                obstacle.x -= gameSpeed;
+
+                if (obstacle.x + obstacleWidth < 0) {
+                    obstacles.splice(index, 1);
+                    score++;
+                    if (score % 10 === 0) {
+                        gameSpeed += 0.5;
+                    }
+                }
+            });
+        }
+
+        function jump() {
+            if (!dino.isJumping || (dino.jumpCount < 2 && Date.now() - lastKeyPressTime < doubleTapTimeLimit && (dino.y < groundLevel || dino.hasJumpedOnce))) {
+                dino.isJumping = true;
+                dino.jumpHeight = dino.jumpSpeed;
+                dino.jumpCount++;
+                if (dino.jumpCount > 1) {
+                    dino.hasJumpedOnce = true;
+                }
+                lastKeyPressTime = Date.now();
+            }
+        }
+
+        function updateDinoPosition() {
+            if (dino.isJumping) {
+                dino.y += dino.jumpHeight;
+                dino.jumpHeight += dino.gravity;
+            }
+
+            if (dino.y >= groundLevel) {
+                dino.y = groundLevel;
+                dino.isJumping = false;
+                dino.jumpCount = 0;
+                dino.hasJumpedOnce = false;
+            }
+        }
+
+        function generateObstacles() {
+            if (Math.random() * obstacleFrequency < 1 && obstacles.length < maxObstaclesOnScreen) {
+                const obstacleY = groundLevel - obstacleHeight;
+                obstacles.push({ x: canvas.width, y: obstacleY });
+            }
+        }
+
+        function checkCollision() {
+            obstacles.forEach((obstacle, index) => {
+                if (
+                    dino.x + dino.width > obstacle.x &&
+                    dino.x < obstacle.x + obstacleWidth &&
+                    dino.y + dino.height > obstacle.y
+                ) {
+                    isGameOver = true;
+                }
+                if (hadouken.isShooting &&
+                    hadouken.x + hadouken.width > obstacle.x &&
+                    hadouken.x < obstacle.x + obstacleWidth &&
+                    hadouken.y + hadouken.height > obstacle.y
+                ) {
+                    hadouken.isShooting = false;
+                }
+            });
+
+            // Bos collision
+            if (boss && !isGameOver) {
+                if (
+                    dino.x + dino.width > boss.x &&
+                    dino.x < boss.x + boss.width &&
+                    dino.y + dino.height > boss.y
+                ) {
+                    isGameOver = true; // Game over jika bos menabrak dinosaurus
+                }
+
+                // Cek jika Hadouken mengenai bos
+                if (hadouken.isShooting &&
+                    hadouken.x + hadouken.width > boss.x &&
+                    hadouken.x < boss.x + boss.width &&
+                    hadouken.y + hadouken.height > boss.y
+                ) {
+                    bossHP -= 10; // Kurangi HP bos jika terkena Hadouken
+                    hadouken.isShooting = false; // Matikan Hadouken setelah mengenai bos
+                }
+            }
+
+            // Cek jika proyektil bos mengenai dino
+            bossProjectiles.forEach((projectile, index) => {
+                if (
+                    projectile.x + projectile.width > dino.x &&
+                    projectile.x < dino.x + dino.width &&
+                    projectile.y + projectile.height > dino.y
+                ) {
+                    isGameOver = true; // Dino terkena proyektil bos
+                    bossProjectiles.splice(index, 1); // Hapus proyektil
+                }
+            });
+        }
+
+        function drawHadouken() {
+            if (hadouken.isShooting) {
+                ctx.drawImage(hadoukenImg, hadouken.x, hadouken.y, hadouken.width, hadouken.height);
+                hadouken.x += hadouken.speed;
+
+                if (hadouken.x > canvas.width) {
+                    hadouken.isShooting = false;
+                }
+            }
+        }
+
+        function drawBoss() {
+            if (boss) {
+                // Gambar bos
+                ctx.fillStyle = 'red';
+                ctx.fillRect(boss.x, boss.y, boss.width, boss.height);
+
+                // Tampilkan HP bos
+                ctx.fillStyle = 'black';
+                ctx.font = '16px Arial';
+                ctx.fillText('HP: ' + bossHP, boss.x, boss.y - 10);
+
+                // Bos menyerang
+                if (Date.now() - lastBossAttackTime > bossAttackCooldown) {
+                    attackWithFireball(); // Bos melakukan serangan
+                    lastBossAttackTime = Date.now();
+                }
+
+                // Jika HP bos habis, hilangkan bos
+                if (bossHP <= 0) {
+                    boss = null; // Hapus bos dari permainan
+                    score += 50; // Memberikan skor tambahan jika bos dikalahkan
+                }
+            }
+        }
+
+        function attackWithFireball() {
+            // Buat proyektil bola api
+            const fireball = {
+                x: boss.x + boss.width,
+                y: boss.y + boss.height / 2,
+                width: 20,
+                height: 10,
+                speed: 4
+            };
+
+            // Masukkan proyektil ke dalam array
+            bossProjectiles.push(fireball);
+        }
+
+        function moveBossProjectiles() {
+            // Gerakkan proyektil bola api
+            bossProjectiles.forEach((projectile, index) => {
+                ctx.fillStyle = 'orange';
+                ctx.fillRect(projectile.x, projectile.y, projectile.width, projectile.height);
+                projectile.x -= projectile.speed;
+
+                if (projectile.x + projectile.width < 0) {
+                    bossProjectiles.splice(index, 1); // Hapus proyektil jika keluar layar
+                }
+            });
+        }
+
+        function drawScore() {
+            ctx.fillStyle = 'black';
+            ctx.font = '20px Arial';
+            ctx.fillText('Score: ' + score, 10, 30);
+        }
+
+        function drawGameOver() {
+            ctx.fillStyle = 'black';
+            ctx.font = '30px Arial';
+            ctx.fillText('Game Over', canvas.width / 2 - 80, canvas.height / 2);
+            ctx.fillText('Final Score: ' + score, canvas.width / 2 - 90, canvas.height / 2 + 30);
+            ctx.fillText('Press any key to restart', canvas.width / 2 - 120, canvas.height / 2 + 60);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (isGameOver) {
+                drawGameOver();
+                return;
+            }
+
+            drawDino();
+            drawObstacles();
+            drawHadouken();
+            drawScore();
+            generateObstacles();
+            checkCollision();
+            updateDinoPosition();
+            moveBossProjectiles();
+
+            if (boss && bossHP > 0) {
+                drawBoss();
+            }
+
+            requestAnimationFrame(draw);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === ' ' && !isGameOver) {
+                jump();
+            } else if (e.key === 'Enter' && isGameOver) {
+                resetGame();
+            } else if (e.key === 'a' && !hadouken.isShooting) {
+                hadouken.isShooting = true;
+                hadouken.x = dino.x + dino.width;
+                hadouken.y = dino.y + 10;
+                hadoukenSound.play(); // Mainkan suara Hadouken
+            }
+        });
+
+        function startBossFight() {
+            boss = {
+                x: canvas.width - 200,
+                y: groundLevel - 80,
+                width: 100,
+                height: 80
+            };
+        }
+
+        // Mulai pertarungan bos setelah skor mencapai nilai tertentu
+        setInterval(() => {
+            if (score >= 10 && !boss) {
+                startBossFight();
+            }
+        }, 1000);
+
+        draw();
+    </script>
+</body>
+</html>
