@@ -1,0 +1,132 @@
+Struktur Database
+
+1. Tabel users
+CREATE TABLE users (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  role VARCHAR(10) NOT NULL, -- 'admin', 'pemilik', 'penyewa'
+  nama_kosan VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  reset_token VARCHAR(255),
+  reset_token_expiry DATETIME,
+  no_gopay VARCHAR(20),
+  alamat_kosan TEXT,
+  latitude VARCHAR(50),
+  longitude VARCHAR(50),
+  is_verified TINYINT(1) DEFAULT 0,
+  verification_token VARCHAR(100),
+  is_deleted TINYINT(1) DEFAULT 0
+);
+
+2. Tabel rooms
+CREATE TABLE rooms (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  number VARCHAR(50) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  status ENUM('Kosong','Ditempati') NOT NULL,
+  facilities TEXT NOT NULL,
+  tenant_name VARCHAR(255),
+  tenant_phone VARCHAR(20),
+  tenant_email VARCHAR(255),
+  tenant_date DATE,
+  last_payment_date DATE,
+  reminder_sent TINYINT(1) DEFAULT 0,
+  payment_status ENUM('belum bayar','sudah bayar') NOT NULL,
+  days_left INT NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  photo VARCHAR(255),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+3. Tabel reservations
+CREATE TABLE reservations (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  room_id INT NOT NULL,
+  pemilik_id INT NOT NULL,
+  tanggal_pesan DATETIME DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('Menunggu','Diterima','Ditolak') DEFAULT 'Menunggu',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (room_id) REFERENCES rooms(id),
+  FOREIGN KEY (pemilik_id) REFERENCES users(id)
+);
+
+4. Tabel pembayaran
+CREATE TABLE pembayaran (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  room_id INT NOT NULL,
+  status VARCHAR(50),
+  metode VARCHAR(50),
+  qr_code VARCHAR(255),
+  bukti_transfer VARCHAR(255),
+  tanggal TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  tanggal_mulai DATE,
+  jumlah INT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+5. Tabel foto_kamar
+CREATE TABLE foto_kamar (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  id_kamar INT NOT NULL,
+  nama_file VARCHAR(255) NOT NULL,
+  deskripsi TEXT,
+  FOREIGN KEY (id_kamar) REFERENCES rooms(id) ON DELETE CASCADE
+);
+
+6. Tabel activity_log
+CREATE TABLE activity_log (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  action INT NOT NULL,
+  activity TEXT NOT NULL,
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  user_id INT NOT NULL
+);
+
+7. Tabel financial_reports
+CREATE TABLE financial_reports (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  room_id INT NOT NULL,
+  amount DECIMAL(10,2) NOT NULL,
+  report_date DATE NOT NULL,
+  date DATE NOT NULL,
+  user_id INT NOT NULL,
+  FOREIGN KEY (room_id) REFERENCES rooms(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+8. Tabel notifications
+CREATE TABLE notifications (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  user_id INT NOT NULL,
+  message TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+9. Tabel kontak_admin
+CREATE TABLE kontak_admin (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  nama VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  subjek VARCHAR(255),
+  pesan TEXT NOT NULL,
+  tanggal TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+10. Tabel orders (Mirip reservations, mungkin sebelumnya dipakai)
+CREATE TABLE orders (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  room_id INT NOT NULL,
+  penyewa_id INT NOT NULL,
+  tanggal_pesan DATE NOT NULL,
+  status ENUM('pending','diterima','ditolak') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (room_id) REFERENCES rooms(id),
+  FOREIGN KEY (penyewa_id) REFERENCES users(id)
+);
