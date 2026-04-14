@@ -1,4 +1,4 @@
-##  Pengujian Sistem (Testing)
+##  Pengujian Sistem DASAR (Testing) 
 
 Berikut adalah hasil pengujian fungsional sistem:
 
@@ -36,5 +36,129 @@ Berikut adalah hasil pengujian validasi input pada berbagai form dalam sistem:
 | Hubungi Admin | Email, pesan | Tidak boleh kosong + format email valid | Backend | PASS |
 
 ---
+  QA Testing & Evaluation SECARA MENYELURUH
+
+---
+ Hasil Pengujian
+
+| Kategori | Status | Keterangan |
+|----------|--------|-----------|
+| Fitur Utama | PASS | Sistem berjalan sesuai fungsi dasar |
+| Validasi & Struktur | PERLU PERBAIKAN | Masih ada kekurangan pada validasi dan struktur |
+| Keamanan & Stabilitas | RISIKO | Terdapat potensi bug dan celah keamanan |
+
+---
+
+##  Fitur yang Berhasil (PASS)
+
+| No | Fitur | Keterangan |
+|----|------|----------|
+| 1 | Login | Proses login berjalan dengan normal |
+| 2 | Register | Registrasi user berhasil |
+| 3 | Logout | Session berhasil dihapus |
+| 4 | Koneksi Database | Sistem terhubung dengan database |
+| 5 | List Kosan | Data kos dapat ditampilkan |
+| 6 | Detail Kos | Informasi detail tampil dengan benar |
+| 7 | Pemesanan Kamar | Data pemesanan tersimpan |
+| 8 | Pembayaran | Modul pembayaran tersedia |
+| 9 | Dashboard Penyewa | Data user tampil sesuai |
+| 10 | Pengelolaan Kamar | Pemilik dapat mengelola kamar |
+
+---
+
+##  Fitur yang Perlu Perbaikan
+
+| No | Fitur | Permasalahan | Rekomendasi |
+|----|------|-------------|------------|
+| 1 | Validasi Form | Validasi belum konsisten | Tambahkan validasi backend |
+| 2 | Struktur Project | File belum terorganisir | Pisahkan folder (auth, admin, user) |
+| 3 | Error Handling | Tidak terpusat | Tambahkan sistem error handling |
+| 4 | UI Konsistensi | Tampilan belum seragam | Gunakan template/layout |
+| 5 | Penamaan File | Tidak konsisten | Gunakan standar penamaan |
+| 6 | Reusability Code | Potensi duplikasi | Gunakan function/helper |
+| 7 | Notifikasi | Tidak real-time | Upgrade ke sistem notifikasi |
+
+---
+
+##  Potensi Bug & Risiko (FAIL / RISK)
+
+| No | Area | Risiko |
+|----|------|-------|
+| 1 | Keamanan Login | Password belum di-hash |
+| 2 | Database | Potensi SQL Injection |
+| 3 | Session | Bisa bypass login |
+| 4 | Upload File | Tidak ada validasi file |
+| 5 | Akses URL | Halaman bisa diakses tanpa login |
+| 6 | Input User | Rentan XSS |
+| 7 | Booking | Potensi double booking |
+| 8 | Pembayaran | Upload file tidak aman |
+| 9 | Error Database | Tidak ditangani |
+| 10 | Role Access | Tidak ada pembatasan role |
+
+---
+
+##  Checklist QA
+
+### 🔹 Functional Testing
+- [x] Login berjalan
+- [x] Register berjalan
+- [x] CRUD data berjalan
+- [x] Pemesanan kamar berjalan
+
+### 🔹 Validation Testing
+- [ ] Validasi backend lengkap
+- [ ] Validasi input aman
+
+### 🔹 Security Testing
+- [ ] Password hashing
+- [ ] Prepared statement
+- [ ] Proteksi session
+- [ ] Validasi upload file
+
+###  UI/UX Testing
+- [x] Navigasi berjalan
+- [ ] Konsistensi tampilan
+
+### 🔹 Performance Testing
+- [x] Aplikasi dapat berjalan
+- [ ] Belum diuji performa secara mendalam
+
+---
+
+##  Analisis QA
+
+Sistem yang dikembangkan telah memenuhi fungsi dasar aplikasi, namun masih memiliki beberapa kekurangan terutama pada aspek:
+
+- Keamanan sistem  
+- Validasi input  
+- Struktur kode  
+- Manajemen session  
+
+Secara keseluruhan, sistem berada pada level:
+
+> **Intermediate (Layak digunakan, namun belum siap production)**
+
+---
+
+##  Rekomendasi Perbaikan
+
+###  Prioritas Tinggi
+- Implementasi password hashing (`password_hash`)
+- Gunakan prepared statement (PDO / MySQLi)
+- Validasi input di backend
+- Proteksi session dan autentikasi
+
+###  Prioritas Menengah
+- Perbaikan struktur folder
+- Penambahan error handling
+- Konsistensi UI
+
+###  Prioritas Tambahan
+- Logging system
+- Notifikasi real-time
+- Audit aktivitas user
+
+---
+
 
 
