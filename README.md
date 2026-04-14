@@ -159,6 +159,20 @@ Secara keseluruhan, sistem berada pada level:
 - Audit aktivitas user
 
 ---
+##  Kesimpulan Report – Analisis Kualitas Sistem
 
+Berdasarkan hasil analisis terhadap sistem aplikasi KosMen.com, dapat disimpulkan bahwa aplikasi telah berhasil mengimplementasikan sebagian besar fitur utama dengan baik, khususnya pada aspek fungsionalitas dasar seperti registrasi, login multi-role, manajemen kamar, pemesanan, serta proses pembayaran. Seluruh skenario pengujian utama yang dilakukan menunjukkan hasil yang sesuai dengan harapan, di mana setiap fitur berjalan tanpa kendala berarti. Hal ini menunjukkan bahwa sistem telah memenuhi kebutuhan dasar pengguna dan dapat digunakan untuk operasional awal, khususnya dalam skala kecil hingga menengah.
+
+Dari sisi keunggulan, sistem memiliki struktur fitur yang cukup lengkap dan terintegrasi, termasuk penggunaan teknologi eksternal seperti PHPMailer untuk verifikasi email, Leaflet.js untuk visualisasi peta, Chart.js untuk grafik statistik, serta mysqldump untuk backup database. Selain itu, validasi dasar pada input pengguna, seperti format email, konfirmasi password, serta validasi field wajib, telah diterapkan dengan cukup baik sehingga mampu mengurangi kesalahan input dari sisi pengguna. Integrasi berbagai komponen ini menunjukkan bahwa sistem memiliki kemampuan teknis yang cukup baik dalam mendukung kebutuhan aplikasi berbasis web.
+
+Namun demikian, dari sudut pandang Quality Assurance, masih terdapat beberapa kelemahan yang perlu diperhatikan. Salah satu aspek utama adalah keterbatasan cakupan pengujian. Pengujian yang dilakukan masih berfokus pada skenario utama (happy path) dan belum mencakup kondisi ekstrem atau edge cases, seperti token verifikasi yang kadaluarsa, kegagalan pengiriman email, serta pengujian multi-user secara bersamaan. Hal ini menunjukkan bahwa sistem belum sepenuhnya diuji dalam kondisi nyata yang lebih kompleks.
+
+Selain itu, aspek keamanan sistem masih menjadi perhatian utama. Berdasarkan analisis, terdapat potensi risiko seperti belum diterapkannya hashing password, kemungkinan adanya celah SQL Injection, serta belum adanya validasi yang ketat terhadap upload file. Di sisi lain, file backup database berpotensi dapat diakses secara publik apabila tidak dilindungi dengan baik. Risiko-risiko ini dapat berdampak serius terhadap keamanan data pengguna apabila sistem digunakan dalam lingkungan produksi.
+
+Kelemahan lainnya terletak pada validasi backend yang belum sepenuhnya komprehensif. Beberapa validasi masih bergantung pada sisi frontend, sehingga berpotensi untuk dilewati oleh pengguna yang melakukan manipulasi request. Selain itu, manajemen error dalam sistem belum terdefinisi secara jelas, terutama dalam menangani kegagalan proses seperti error database atau kegagalan pengiriman email. Hal ini dapat menyebabkan pengalaman pengguna yang kurang optimal serta menyulitkan proses debugging.
+
+Secara keseluruhan, dari perspektif Quality Assurance, sistem KosMen.com dapat dikategorikan sebagai sistem yang telah siap secara fungsional, namun belum sepenuhnya siap dari sisi keamanan dan ketahanan sistem. Dengan kata lain, sistem ini sudah layak digunakan sebagai prototipe atau aplikasi pembelajaran, namun masih memerlukan peningkatan signifikan sebelum dapat digunakan dalam lingkungan produksi yang sesungguhnya.
+
+Oleh karena itu, beberapa rekomendasi perbaikan yang perlu diprioritaskan antara lain implementasi enkripsi password menggunakan metode yang aman, penggunaan prepared statement untuk mencegah SQL Injection, penambahan validasi input di sisi backend, serta pembatasan akses terhadap file sensitif seperti backup database. Selain itu, disarankan untuk menambahkan mekanisme error handling yang lebih baik, serta melakukan pengujian lanjutan seperti stress testing dan concurrency testing guna meningkatkan kualitas dan keandalan sistem secara keseluruhan.
 
 
