@@ -7,6 +7,8 @@ https://youtu.be/jhVP6B7iZF4?si=rMj-zNdwsdDfMueE
 ##  Struktur database
 https://youtu.be/WCb-KeT3MNA?si=xIHEu2bm2aQe3M70
 
+## TUTORIAL APK
+Modul tutorial Aplikasi kosan.docx
 ...
 
 ##  Pengujian Sistem DASAR (Testing) 
