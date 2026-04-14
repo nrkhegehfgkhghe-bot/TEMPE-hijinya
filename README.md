@@ -1,5 +1,5 @@
 # KOSMEN
-
+---
 ##  Demo Aplikasi
 https://youtu.be/y7N0N2dxTlA?si=IMrp2LpXXpjNMLoA
 https://youtu.be/jhVP6B7iZF4?si=rMj-zNdwsdDfMueE
@@ -8,8 +8,8 @@ https://youtu.be/jhVP6B7iZF4?si=rMj-zNdwsdDfMueE
 https://youtu.be/WCb-KeT3MNA?si=xIHEu2bm2aQe3M70
 
 ## TUTORIAL APK
-Modul tutorial Aplikasi kosan.docx
-...
+MODUL tutorial Aplikasi Kosan.docx
+---
 
 ##  Pengujian Sistem DASAR (Testing) 
 
